@@ -4,27 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const split2 = require('split2');
 const through2 = require('through2');
-
-class Langage {
-    getGenerator () {
-        let self = this;
-        return (function* () {
-            for(let flag of self.flags)
-                yield flag;
-        })();
-    }
-}
-
-class CPP extends Langage{
-    constructor() {
-        super();
-        this.EOF = /int\s+main\s?\(\) {/;
-        this.flags = [
-            /#(include|define)\s?<.+>/,
-            /using namespace std;/
-        ];
-    }
-}
+const langage = require('./language');
 
 function short(langage, input_path, output_path) {
     let generator = langage.getGenerator();
@@ -69,6 +49,6 @@ function short(langage, input_path, output_path) {
 let input_path = path.resolve('.', 'src', 'test.input.cpp');
 let output_path = path.resolve('.', 'src', 'test.output.cpp');
 
-let c = new CPP();
+let c = new langage.CPP();
 let g = c.getGenerator();
 short(c, input_path, output_path);
