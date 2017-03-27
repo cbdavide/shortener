@@ -1,17 +1,11 @@
 'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const split2 = require('split2');
 const through2 = require('through2');
 
-class CPP {
-    constructor() {
-        this.flags = [
-            /#(include|define)\s?<.+>/,
-            /using namespace std;/
-        ]
-    }
-
+class Langage {
     getGenerator () {
         let self = this;
         return (function* () {
@@ -21,27 +15,43 @@ class CPP {
     }
 }
 
-function short(generator, input_path, output_path) {
+class CPP extends Langage{
+    constructor() {
+        super();
+        this.EOF = /int\s+main\s?\(\) {/;
+        this.flags = [
+            /#(include|define)\s?<.+>/,
+            /using namespace std;/
+        ];
+    }
+}
+
+function short(langage, input_path, output_path) {
+    let generator = langage.getGenerator();
     let flag = generator.next().value;
+    let EOF = 0;
 
     fs.createReadStream(input_path, {encoding: 'utf-8'})
         .pipe(split2())
         .pipe(through2({objectMode: true}, function(chunk, enc, cb) {
-            if(chunk === '') {
+
+            if(EOF || chunk === '') {
+                cb(); return;
+            }
+
+            if(flag === undefined && langage.EOF.test(chunk)) {
+                EOF = 1;
                 cb(); return;
             }
 
             while(flag != undefined) {
-                console.log('>', flag, chunk)
                 if(flag.test(chunk)) {
-                    cb();
-                    return;
+                    cb(); return;
                 } else {
                     flag = generator.next().value;
-                    console.log(':)', flag);
                 }
             }
-            console.log('here', chunk);
+
             this.push(chunk + '\n');
             cb();
         }))
@@ -50,7 +60,9 @@ function short(generator, input_path, output_path) {
             flags: 'w'
         }))
         .on('finish', (err) => {
-            console.log('buenala');
+            input_path = path.basename(input_path);
+            output_path = path.basename(output_path);
+            console.log(`Finished: ${input_path} -> ${output_path}`);
         });
 }
 
@@ -59,4 +71,4 @@ let output_path = path.resolve('.', 'src', 'test.output.cpp');
 
 let c = new CPP();
 let g = c.getGenerator();
-short(g, input_path, output_path);
+short(c, input_path, output_path);
