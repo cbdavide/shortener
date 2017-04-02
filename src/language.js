@@ -29,16 +29,7 @@ class Python extends Language {
     }
 }
 
-class Java extends Language {
-    constructor() {
-        super();
-        this.EOF = //;
-        this.flags = [];
-    }
-}
-
 module.exports = {
     cpp: CPP,
     py: Python,
-    java: Java
 }

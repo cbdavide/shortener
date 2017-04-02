@@ -3,7 +3,7 @@
 const path = require('path');
 const fs = require('fs-extra');
 const short = require('./src/shortener');
-const langage = require('./src/language');
+const language = require('./src/language');
 
 const print = console.log;
 
@@ -22,11 +22,11 @@ function traverse(folder, salida) {
             traverse(file_path, path.join(salida, folder_name));
         } else {
 
-            if(file_name[1] === 'cpp' || file_name[1] === 'py') {
+            if(language[file_name[1]] !== undefined) {
                 let o_path = path.join(OUT, file_name[1], salida);
 
                 fs.ensureDir(o_path, (err) => {
-                    short(new langage[file_name[1]], file_path, path.join(o_path, file));
+                    short(new language[file_name[1]], file_path, path.join(o_path, file));
                 })
             }
 
