@@ -2,7 +2,7 @@
   "name": "shortener",
   "version": "0.0.0",
   "description": "Removing import statements an main functions of code files",
-  "main": "index.js",
+  "main": "lib/index.js",
   "author": "David Castelblanco Benavides <cbdavides@gmail.com>",
   "license": "MIT",
   "dependencies": {
