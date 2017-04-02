@@ -6,6 +6,7 @@
   "author": "David Castelblanco Benavides <cbdavides@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "fs-extra": "^2.1.2",
     "split2": "^2.1.1",
     "through2": "^2.0.3"
   }
