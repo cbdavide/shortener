@@ -4,10 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const split2 = require('split2');
 const through2 = require('through2');
-const langage = require('./language');
+const language = require('./language');
 
-function short(langage, input_path, output_path) {
-    let generator = langage.getGenerator();
+function short(language, input_path, output_path) {
+    let generator = language.getGenerator();
     let flag = generator.next().value;
     let EOF = 0;
 
@@ -16,10 +16,10 @@ function short(langage, input_path, output_path) {
         .pipe(through2({objectMode: true}, function(chunk, enc, cb) {
 
             if(EOF || chunk === '') {
-                cb(); return;
+                cb(); return;language
             }
 
-            if(flag === undefined && langage.EOF.test(chunk)) {
+            if(flag === undefined && language.EOF.test(chunk)) {
                 EOF = 1;
                 cb(); return;
             }
@@ -39,16 +39,6 @@ function short(langage, input_path, output_path) {
             defaultEncoding: 'utf-8',
             flags: 'w'
         }))
-        .on('finish', (err) => {
-            input_path = path.basename(input_path);
-            output_path = path.basename(output_path);
-            console.log(`Finished: ${input_path} -> ${output_path}`);
-        });
 }
 
-let input_path = path.resolve('.', 'src', 'test.input.cpp');
-let output_path = path.resolve('.', 'src', 'test.output.cpp');
-
-let c = new langage.CPP();
-let g = c.getGenerator();
-short(c, input_path, output_path);
+module.exports = short;

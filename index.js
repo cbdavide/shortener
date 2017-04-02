@@ -1,42 +1,37 @@
 'use strict'
 
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
+const short = require('./src/shortener');
+const langage = require('./src/language');
 
 const print = console.log;
 
 const ROOT = path.resolve('.', 'backyard');
 const OUT = path.resolve('.', '__code');
 
-if(fs.existsSync(OUT))
-    fs.rmdirSync(OUT);
-
-function traverse(folder, salida, cb) {
-    let names = {};
-    fs.mkdir(salida);
+function traverse(folder, salida) {
 
     fs.readdirSync(folder).forEach(file => {
 
         let file_path = path.resolve(folder, file);
-        let file_name = file.split('.')[0];
+        let file_name = file.split('.');
 
         if(fs.lstatSync(file_path).isDirectory()) {
             let folder_name = path.basename(file_path);
-            traverse(file_path, path.join(salida, folder_name), cb);
+            traverse(file_path, path.join(salida, folder_name));
         } else {
 
-            if(!names[file_name])
-                names[file_name] = []
+            if(file_name[1] === 'cpp' || file_name[1] === 'py') {
+                let o_path = path.join(OUT, file_name[1], salida);
 
-            names[file_name].push(file);
+                fs.ensureDir(o_path, (err) => {
+                    short(new langage[file_name[1]], file_path, path.join(o_path, file));
+                })
+            }
+
         }
     });
-    // cb(folder, names);
 }
 
-function joini(folder, files) {
-
-}
-
-
-// traverse(ROOT, OUT, joini);
+traverse(ROOT, '');
