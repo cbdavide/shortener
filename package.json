@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "author": "David Castelblanco Benavides <cbdavides@gmail.com>",
   "license": "MIT",
+  "bin": {"shortener": "./bin/shortener"},
   "dependencies": {
     "fs-extra": "^2.1.2",
     "split2": "^2.1.1",

@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+const shortener = require('../lib');
+const path = require('path');
+let argv = require('yargs')
+    .usage('Usage: $0 -i path -o path')
+    .options({
+        'i': {
+            describe: 'Input path'
+        },
+        'o': {
+            describe: 'Output path'
+        }
+    })
+    .alias('i', 'input')
+    .alias('o', 'output')
+    .demandOption(['i', 'o'])
+    .argv;
+
+let input = path.resolve('.', argv.i);
+let output = path.resolve('.', argv.o);
+shortener({
+    input: input,
+    output: output,
+    aux: ''
+});
